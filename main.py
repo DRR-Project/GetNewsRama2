@@ -32,6 +32,7 @@ RSS_FEEDS = [
     "https://doh.go.th/rss/newsum",
     "https://www.nationthailand.com/rss",
     "https://rss.app/feeds/AZuuiVkf1deAllDc.xml",
+    "https://www.tmd.go.th/api/xml/region-daily-forecast?regionid=7",
     
     # Google News
     # "https://news.google.com/rss?hl=th&gl=TH&ceid=TH:th", Google News กว้างเกินไป
