@@ -69,9 +69,26 @@ def save_seen_links(seen_links):
 
 
 def send_discord_notification(title, link):
-    message = f"🛣️ พบข่าวเกี่ยวกับถนนพระราม 2:\n**{title}**\n{link}"
+    # message = f"🛣️ พบข่าวเกี่ยวกับถนนพระราม 2:\n**{title}**\n{link}"
+    # try:
+    #     response = requests.post(WEBHOOK_URL, json={"content": message})
+    #     response.raise_for_status()
+    #     logging.info(f"✅ ส่งแจ้งเตือนแล้ว: {title}")
+    # except requests.RequestException as e:
+    #     logging.error(f"❌ ส่ง webhook ไม่สำเร็จ: {e}")
+    
+    embed = {
+        "title": title,
+        "url": link,
+        "color": 0x00b0f4,
+        "description": f"พบข่าวเกี่ยวกับถนนพระราม 2",
+        "footer": {"text": "แจ้งเตือนอัตโนมัติจากระบบ"},
+        "timestamp": datetime.utcnow().isoformat()
+    }
+    payload = {"embeds": [embed]}
+    
     try:
-        response = requests.post(WEBHOOK_URL, json={"content": message})
+        response = requests.post(WEBHOOK_URL, json=payload)
         response.raise_for_status()
         logging.info(f"✅ ส่งแจ้งเตือนแล้ว: {title}")
     except requests.RequestException as e:
