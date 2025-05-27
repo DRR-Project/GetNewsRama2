@@ -64,8 +64,10 @@ def load_seen_links():
 
 
 def save_seen_links(seen_links):
+    MAX_LINKS = 1000  # ปรับได้ตามขนาดที่เหมาะสม
+    trimmed_links = list(seen_links)[-MAX_LINKS:]
     with open(SEEN_LINKS_FILE, "w", encoding="utf-8") as file:
-        file.write("\n".join(seen_links))
+        file.write("\n".join(trimmed_links))
 
 
 def send_discord_notification(title, link):
@@ -115,6 +117,7 @@ def main():
                 if published:
                     published_dt = datetime.fromtimestamp(time.mktime(published))
                     if published_dt < cutoff_time:
+                        logging.debug(f"⏱️ ข้ามข่าวเก่า: {title} ({published_dt.isoformat()})")
                         continue
 
                 if entry_link in seen_links:
@@ -137,4 +140,7 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except Exception as e:
+        logging.exception(f"‼️ เกิดข้อผิดพลาดใน main(): {e}")
