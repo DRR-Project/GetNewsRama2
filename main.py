@@ -81,7 +81,7 @@ def main():
     seen_links = load_seen_links()
     updated_links = set()
 
-    cutoff_time = datetime.utcnow() - timedelta(hours=48)  # ✅ ช่วงเวลาย้อนหลัง
+    cutoff_time = datetime.utcnow() - timedelta(hours=24)  # ✅ ช่วงเวลาย้อนหลัง
 
     for url in RSS_FEEDS:
         try:
