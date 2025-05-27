@@ -1,8 +1,8 @@
-name: Run RSS Checker every 5 minutes
+name: Run RSS Checker every 2 minutes
 
 on:
   schedule:
-    - cron: '*/5 * * * *'  # รันทุก 5 นาที
+    - cron: '*/2 * * * *'  # รันทุก 2 นาที
   workflow_dispatch:      # อนุญาตให้รันด้วยมือ (Manual Run)
 
 jobs:
@@ -12,6 +12,12 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
+
+    - name: Download seen_links.txt from last run (if exists)
+      uses: actions/download-artifact@v4
+      with:
+        name: seen-links
+        path: .
 
     - name: Set up Python
       uses: actions/setup-python@v5
@@ -28,3 +34,9 @@ jobs:
         DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
       run: |
         python main.py
+
+    - name: Upload seen_links.txt
+      uses: actions/upload-artifact@v4
+      with:
+        name: seen-links
+        path: seen_links.txt
