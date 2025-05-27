@@ -13,11 +13,12 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
 
-    - name: Download seen_links.txt from last run (if exists)
+    - name: Try to download seen_links.txt from last run (if exists)
       uses: actions/download-artifact@v4
       with:
         name: seen-links
         path: .
+      continue-on-error: true  # ป้องกันล้มเหลวหากยังไม่มี artifact
 
     - name: Set up Python
       uses: actions/setup-python@v5
@@ -35,7 +36,8 @@ jobs:
       run: |
         python main.py
 
-    - name: Upload seen_links.txt
+    - name: Upload seen_links.txt (if exists)
+      if: success() && (hashFiles('seen_links.txt') != '')
       uses: actions/upload-artifact@v4
       with:
         name: seen-links
