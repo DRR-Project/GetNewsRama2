@@ -2,7 +2,7 @@ name: Run RSS Checker every minute
 
 on:
   schedule:
-    - cron: '* * * * *'  # รันทุก 1 นาที
+    - cron: '*/5 * * * *'  # รันทุก 1 นาที
   workflow_dispatch:      # อนุญาตให้รันด้วยมือ (Manual Run)
 
 jobs:
