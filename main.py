@@ -5,6 +5,7 @@ import logging
 import time
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
+from urllib.parse import urlparse
 
 # โหลด environment variables
 load_dotenv()
@@ -35,14 +36,13 @@ RSS_FEEDS = [
     "https://www.tmd.go.th/api/xml/region-daily-forecast?regionid=7",
     
     # Google News
-    # "https://news.google.com/rss?hl=th&gl=TH&ceid=TH:th", Google News กว้างเกินไป
-    "https://news.google.com/rss/search?q=%E0%B8%96%E0%B8%99%E0%B8%99%E0%B8%9E%E0%B8%A3%E0%B8%B0%E0%B8%A3%E0%B8%B2%E0%B8%A1?2&hl=th&gl=TH&ceid=TH:th",
+    # "https://news.google.com/rss?hl=th&gl=TH&ceid=TH:th", #Google News กว้างเกินไปไม่ค่อยเวิร์ค
+    "https://news.google.com/rss/search?q=%E0%B8%96%E0%B8%99%E0%B8%99%E0%B8%9E%E0%B8%A3%E0%B8%B0%E0%B8%A3%E0%B8%B2%E0%B8%A1?2&hl=th&gl=TH&ceid=TH:th", #ถนนพระราม 2
     "https://news.google.com/rss/search?q=%E0%B8%AD%E0%B8%A1%E0%B8%A3%E0%B8%B4%E0%B8%99%E0%B8%97%E0%B8%A3%E0%B9%8C%E0%B8%97%E0%B8%B5%E0%B8%A7%E0%B8%B5&hl=th&gl=TH&ceid=TH:th", #อมรินทร์ทีวี 
-    "https://news.google.com/rss/search?q=%E0%B8%88%E0%B8%A3%E0%B8%B2%E0%B8%88%E0%B8%A3+%E0%B8%9E%E0%B8%A3%E0%B8%B0%E0%B8%A3%E0%B8%B2%E0%B8%A1?2&hl=th&gl=TH&ceid=TH:th", #จราจร+พระราม 2
-    "https://news.google.com/rss/search?q=js100+%E0%B8%9E%E0%B8%A3%E0%B8%B0%E0%B8%A3%E0%B8%B2%E0%B8%A1?2&hl=th&gl=TH&ceid=TH:th", #js100+พระราม 2
-    "https://news.google.com/rss/search?q=%E0%B8%AD%E0%B8%B8%E0%B8%9A%E0%B8%B1%E0%B8%95%E0%B8%B4%E0%B9%80%E0%B8%AB%E0%B8%95%E0%B8%B8+%E0%B8%9E%E0%B8%A3%E0%B8%B0%E0%B8%A3%E0%B8%B2%E0%B8%A1?2&hl=th&gl=TH&ceid=TH:th", #อุบัติเหตุ+พระราม 2
-    "https://news.google.com/rss/search?q=%E0%B8%AD%E0%B8%B8%E0%B8%9A%E0%B8%B1%E0%B8%95%E0%B8%B4%E0%B9%80%E0%B8%AB%E0%B8%95%E0%B8%B8%E0%B8%9E%E0%B8%A3%E0%B8%B0%E0%B8%A3%E0%B8%B2%E0%B8%A1?2&hl=th&gl=TH&ceid=TH:th", #อุบัติเหตุพระราม 2
-    "https://news.google.com/rss/search?q=%E0%B8%99%E0%B9%89%E0%B8%B3%E0%B8%97%E0%B9%88%E0%B8%A7%E0%B8%A1+%E0%B8%9E%E0%B8%A3%E0%B8%B0%E0%B8%A3%E0%B8%B2%E0%B8%A1?2&hl=th&gl=TH&ceid=TH:th", #น้ำท่วม+พระราม 2
+    "https://news.google.com/rss/search?q=%E0%B8%88%E0%B8%A3%E0%B8%B2%E0%B8%88%E0%B8%A3+%E0%B8%9E%E0%B8%A3%E0%B8%B0%E0%B8%A3%E0%B8%B2%E0%B8%A1?2&hl=th&gl=TH&ceid=TH:th", #จราจร + พระราม 2
+    "https://news.google.com/rss/search?q=js100+%E0%B8%9E%E0%B8%A3%E0%B8%B0%E0%B8%A3%E0%B8%B2%E0%B8%A1?2&hl=th&gl=TH&ceid=TH:th", #js100 + พระราม 2
+    "https://news.google.com/rss/search?q=%E0%B8%AD%E0%B8%B8%E0%B8%9A%E0%B8%B1%E0%B8%95%E0%B8%B4%E0%B9%80%E0%B8%AB%E0%B8%95%E0%B8%B8+%E0%B8%9E%E0%B8%A3%E0%B8%B0%E0%B8%A3%E0%B8%B2%E0%B8%A1?2&hl=th&gl=TH&ceid=TH:th", #อุบัติเหตุ + พระราม 2
+    "https://news.google.com/rss/search?q=%E0%B8%99%E0%B9%89%E0%B8%B3%E0%B8%97%E0%B9%88%E0%B8%A7%E0%B8%A1+%E0%B8%9E%E0%B8%A3%E0%B8%B0%E0%B8%A3%E0%B8%B2%E0%B8%A1?2&hl=th&gl=TH&ceid=TH:th", #น้ำท่วม + พระราม 2
 
 
    
@@ -69,8 +69,8 @@ def save_seen_links(seen_links):
     with open(SEEN_LINKS_FILE, "w", encoding="utf-8") as file:
         file.write("\n".join(trimmed_links))
 
-
-def send_discord_notification(title, link):
+# ของเดิม
+# def send_discord_notification(title, link):
     # message = f"🛣️ พบข่าวเกี่ยวกับถนนพระราม 2:\n**{title}**\n{link}"
     # try:
     #     response = requests.post(WEBHOOK_URL, json={"content": message})
@@ -79,20 +79,44 @@ def send_discord_notification(title, link):
     # except requests.RequestException as e:
     #     logging.error(f"❌ ส่ง webhook ไม่สำเร็จ: {e}")
     
+    # embed = {
+    #     "title": title,
+    #     "url": link,
+    #     "color": 0x00b0f4,
+    #     "description": f"พบข่าวเกี่ยวกับถนนพระราม 2",
+    #     "footer": {"text": "แจ้งเตือนอัตโนมัติจากระบบ"},
+    #     "timestamp": datetime.utcnow().isoformat()
+    # }
+    # payload = {"embeds": [embed]}
+    
+    # try:
+    #     response = requests.post(WEBHOOK_URL, json=payload)
+    #     response.raise_for_status()
+    #     logging.info(f"✅ ส่งแจ้งเตือนแล้ว: {title}")
+    # except requests.RequestException as e:
+    #     logging.error(f"❌ ส่ง webhook ไม่สำเร็จ: {e}")
+
+#โค้ด Embed + รูป + แหล่งข่าว (Webhooks ได้)
+def send_discord_notification(title, link, image_url=None):
+    source = urlparse(link).netloc.replace("www.", "")
     embed = {
         "title": title,
         "url": link,
         "color": 0x00b0f4,
-        "description": f"พบข่าวเกี่ยวกับถนนพระราม 2",
-        "footer": {"text": "แจ้งเตือนอัตโนมัติจากระบบ"},
+        "description": f"**แหล่งข่าว**: {source}",
+        "footer": {"text": "แจ้งเตือนจากระบบ RSS"},
         "timestamp": datetime.utcnow().isoformat()
     }
+
+    if image_url:
+        embed["image"] = {"url": image_url}
+
     payload = {"embeds": [embed]}
-    
+
     try:
         response = requests.post(WEBHOOK_URL, json=payload)
         response.raise_for_status()
-        logging.info(f"✅ ส่งแจ้งเตือนแล้ว: {title}")
+        logging.info(f"✅ ส่งแจ้งเตือนพร้อม Embed: {title}")
     except requests.RequestException as e:
         logging.error(f"❌ ส่ง webhook ไม่สำเร็จ: {e}")
 
@@ -101,7 +125,7 @@ def main():
     seen_links = load_seen_links()
     updated_links = set()
 
-    cutoff_time = datetime.utcnow() - timedelta(hours=48)  # ✅ ช่วงเวลาย้อนหลัง
+    cutoff_time = datetime.utcnow() - timedelta(hours=24)  # ✅ ช่วงเวลาย้อนหลัง
 
     for url in RSS_FEEDS:
         try:
