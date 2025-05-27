@@ -50,7 +50,7 @@ RSS_FEEDS = [
 
 # คำค้นหา
 # KEYWORDS = ["พระราม 2", "พระราม 2 น้ำท่วม", "พระราม 2 อุบัติเหตุ", "น้ำท่วม พระราม 2", "อุบัติเหตุ พระราม 2", "ถนนพระราม 2"]
-KEYWORDS = ["พระราม 2", "ถนนพระราม 2", "น้ำท่วม", "ฝนตก"]
+KEYWORDS = ["พระราม 2", "ถนนพระราม 2", "น้ำท่วม", "ฝนตก", "อุบัติเหตุ"]
 
 # ไฟล์เก็บลิงก์ที่เคยแจ้งแล้ว
 SEEN_LINKS_FILE = "seen_links.txt"
@@ -101,7 +101,7 @@ def main():
     seen_links = load_seen_links()
     updated_links = set()
 
-    cutoff_time = datetime.utcnow() - timedelta(hours=24)  # ✅ ช่วงเวลาย้อนหลัง
+    cutoff_time = datetime.utcnow() - timedelta(hours=48)  # ✅ ช่วงเวลาย้อนหลัง
 
     for url in RSS_FEEDS:
         try:
