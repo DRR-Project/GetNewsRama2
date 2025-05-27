@@ -1,4 +1,4 @@
-name: Run RSS Checker every minute
+name: Run RSS Checker every 5 minutes
 
 on:
   schedule:
