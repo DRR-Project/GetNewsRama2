@@ -35,6 +35,7 @@ RSS_FEEDS = [
     "https://news.google.com/rss/search?q=อัมรินทร์ทีวี&hl=th&gl=TH&ceid=TH:th",
     "https://news.google.com/rss/search?q=จราจร+พระราม2&hl=th&gl=TH&ceid=TH:th",
     "https://news.google.com/rss/search?q=js100+พระราม2&hl=th&gl=TH&ceid=TH:th",
+    "https://news.google.com/rss/search?q=JS100Radio+พระราม2&hl=th&gl=TH&ceid=TH:th",
     "https://news.google.com/rss/search?q=อุบัติเหตุ+พระราม2&hl=th&gl=TH&ceid=TH:th",
     "https://news.google.com/rss/search?q=น้ำท่วม+พระราม2&hl=th&gl=TH&ceid=TH:th",
 ]
@@ -43,13 +44,16 @@ RSS_FEEDS = [
 KEYWORDS_REGEX = [
     re.compile(r'พระราม\s*2'),
     re.compile(r'ถนน\s*พระราม\s*2'),
-    re.compile(r'น้ำท่วม\s*พระราม\s*2'),
+    re.compile(r'จราจร\s*พระราม\s*2'),
     re.compile(r'ฝนตก\s*พระราม\s*2'),
     re.compile(r'อุบัติเหตุ\s*พระราม\s*2'),
-    
-    re.compile(r'น้ำท่วม'), #test
-    re.compile(r'อุบัติเหตุ'), #test
-    re.compile(r'ฝนตก') #test
+    re.compile(r'น้ำท่วม\s*พระราม\s*2'),
+    re.compile(r'รถติด\s*พระราม\s*2'),
+    re.compile(r'อันตราย\s*พระราม\s*2'),
+
+    # re.compile(r'น้ำท่วม'), #test
+    # re.compile(r'อุบัติเหตุ'), #test
+    # re.compile(r'ฝนตก') #test
 ]
 
 SEEN_LINKS_FILE = "seen_links.txt"
@@ -89,7 +93,7 @@ def send_discord_notification(title, link, image_url=None):
         "color": 0x00b0f4,
         "description": f"**แหล่งข่าว**: {source}",
         "footer": {"text": "แจ้งเตือนจากระบบ RSS"},
-        "timestamp": datetime.utcnow().isoformat()
+        "timestamp": datetime.now().isoformat()
     }
 
     if image_url:
@@ -105,11 +109,10 @@ def send_discord_notification(title, link, image_url=None):
         logging.error(f"❌ ส่ง webhook ไม่สำเร็จ: {e}")
 
 def main():
-    logging.info(f"✅✅✅ Start-Time : {datetime.now()}")
+    logging.info(f"✅✅✅ Start-Time : {datetime.now()} ✅✅✅")
     seen_links = load_seen_links()
     updated_links = set()
     cutoff_time = datetime.now() - timedelta(days=10)
-    # logging.info(f"✅⏱️⏱️ Time : {datetime.now()}")
 
 
     for url in RSS_FEEDS:
@@ -142,11 +145,11 @@ def main():
         seen_links.update(updated_links)
         save_seen_links(seen_links)
         logging.info(f"📝 บันทึกลิงก์ใหม่จำนวน {len(updated_links)} รายการแล้ว")
-        logging.info(f"✅✅✅ End-Process : {datetime.now()}")
+        logging.info(f"✅✅✅ End-Process : {datetime.now()} ✅✅✅")
 
     else:
         logging.info("📭 ไม่พบข่าวใหม่ที่เกี่ยวข้อง")
-        logging.info(f"✅✅✅ End-Process : {datetime.now()}")
+        logging.info(f"✅✅✅ End-Process : {datetime.now()} ✅✅✅")
 
 if __name__ == "__main__":
     try:
