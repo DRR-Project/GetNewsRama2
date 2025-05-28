@@ -37,24 +37,21 @@ RSS_FEEDS = [
     
     # Google News
     # "https://news.google.com/rss?hl=th&gl=TH&ceid=TH:th", #Google News กว้างเกินไปไม่ค่อยเวิร์ค
-    "https://news.google.com/rss/search?q=%E0%B8%96%E0%B8%99%E0%B8%99%E0%B8%9E%E0%B8%A3%E0%B8%B0%E0%B8%A3%E0%B8%B2%E0%B8%A1?2&hl=th&gl=TH&ceid=TH:th", #ถนนพระราม 2
-    "https://news.google.com/rss/search?q=%E0%B8%AD%E0%B8%A1%E0%B8%A3%E0%B8%B4%E0%B8%99%E0%B8%97%E0%B8%A3%E0%B9%8C%E0%B8%97%E0%B8%B5%E0%B8%A7%E0%B8%B5&hl=th&gl=TH&ceid=TH:th", #อมรินทร์ทีวี 
-    "https://news.google.com/rss/search?q=%E0%B8%88%E0%B8%A3%E0%B8%B2%E0%B8%88%E0%B8%A3+%E0%B8%9E%E0%B8%A3%E0%B8%B0%E0%B8%A3%E0%B8%B2%E0%B8%A1?2&hl=th&gl=TH&ceid=TH:th", #จราจร + พระราม 2
-    "https://news.google.com/rss/search?q=js100+%E0%B8%9E%E0%B8%A3%E0%B8%B0%E0%B8%A3%E0%B8%B2%E0%B8%A1?2&hl=th&gl=TH&ceid=TH:th", #js100 + พระราม 2
-    "https://news.google.com/rss/search?q=%E0%B8%AD%E0%B8%B8%E0%B8%9A%E0%B8%B1%E0%B8%95%E0%B8%B4%E0%B9%80%E0%B8%AB%E0%B8%95%E0%B8%B8+%E0%B8%9E%E0%B8%A3%E0%B8%B0%E0%B8%A3%E0%B8%B2%E0%B8%A1?2&hl=th&gl=TH&ceid=TH:th", #อุบัติเหตุ + พระราม 2
-    "https://news.google.com/rss/search?q=%E0%B8%99%E0%B9%89%E0%B8%B3%E0%B8%97%E0%B9%88%E0%B8%A7%E0%B8%A1+%E0%B8%9E%E0%B8%A3%E0%B8%B0%E0%B8%A3%E0%B8%B2%E0%B8%A1?2&hl=th&gl=TH&ceid=TH:th", #น้ำท่วม + พระราม 2
+    # "https://news.google.com/rss/search?q=%E0%B8%96%E0%B8%99%E0%B8%99%E0%B8%9E%E0%B8%A3%E0%B8%B0%E0%B8%A3%E0%B8%B2%E0%B8%A1?2&hl=th&gl=TH&ceid=TH:th", #ถนนพระราม 2
+    # "https://news.google.com/rss/search?q=%E0%B8%AD%E0%B8%A1%E0%B8%A3%E0%B8%B4%E0%B8%99%E0%B8%97%E0%B8%A3%E0%B9%8C%E0%B8%97%E0%B8%B5%E0%B8%A7%E0%B8%B5&hl=th&gl=TH&ceid=TH:th", #อมรินทร์ทีวี 
+    # "https://news.google.com/rss/search?q=%E0%B8%88%E0%B8%A3%E0%B8%B2%E0%B8%88%E0%B8%A3+%E0%B8%9E%E0%B8%A3%E0%B8%B0%E0%B8%A3%E0%B8%B2%E0%B8%A1?2&hl=th&gl=TH&ceid=TH:th", #จราจร + พระราม 2
+    # "https://news.google.com/rss/search?q=js100+%E0%B8%9E%E0%B8%A3%E0%B8%B0%E0%B8%A3%E0%B8%B2%E0%B8%A1?2&hl=th&gl=TH&ceid=TH:th", #js100 + พระราม 2
+    # "https://news.google.com/rss/search?q=%E0%B8%AD%E0%B8%B8%E0%B8%9A%E0%B8%B1%E0%B8%95%E0%B8%B4%E0%B9%80%E0%B8%AB%E0%B8%95%E0%B8%B8+%E0%B8%9E%E0%B8%A3%E0%B8%B0%E0%B8%A3%E0%B8%B2%E0%B8%A1?2&hl=th&gl=TH&ceid=TH:th", #อุบัติเหตุ + พระราม 2
+    # "https://news.google.com/rss/search?q=%E0%B8%99%E0%B9%89%E0%B8%B3%E0%B8%97%E0%B9%88%E0%B8%A7%E0%B8%A1+%E0%B8%9E%E0%B8%A3%E0%B8%B0%E0%B8%A3%E0%B8%B2%E0%B8%A1?2&hl=th&gl=TH&ceid=TH:th", #น้ำท่วม + พระราม 2
 
 
-   
 ]
 
 # คำค้นหา
-# KEYWORDS = ["พระราม 2", "พระราม 2 น้ำท่วม", "พระราม 2 อุบัติเหตุ", "น้ำท่วม พระราม 2", "อุบัติเหตุ พระราม 2", "ถนนพระราม 2"]
 KEYWORDS = ["พระราม 2", "ถนนพระราม 2", "น้ำท่วม", "ฝนตก", "อุบัติเหตุ"]
 
 # ไฟล์เก็บลิงก์ที่เคยแจ้งแล้ว
 SEEN_LINKS_FILE = "seen_links.txt"
-
 
 def load_seen_links():
     if not os.path.exists(SEEN_LINKS_FILE):
@@ -62,14 +59,13 @@ def load_seen_links():
     with open(SEEN_LINKS_FILE, "r", encoding="utf-8") as file:
         return set(line.strip() for line in file.readlines())
 
-
 def save_seen_links(seen_links):
     MAX_LINKS = 1000  # ปรับได้ตามขนาดที่เหมาะสม
     trimmed_links = list(seen_links)[-MAX_LINKS:]
     with open(SEEN_LINKS_FILE, "w", encoding="utf-8") as file:
         file.write("\n".join(trimmed_links))
 
-# ของเดิม
+# function ของเดิม
 # def send_discord_notification(title, link):
     # message = f"🛣️ พบข่าวเกี่ยวกับถนนพระราม 2:\n**{title}**\n{link}"
     # try:
@@ -105,7 +101,7 @@ def send_discord_notification(title, link, image_url=None):
         "color": 0x00b0f4,
         "description": f"**แหล่งข่าว**: {source}",
         "footer": {"text": "แจ้งเตือนจากระบบ RSS"},
-        "timestamp": datetime.utcnow().isoformat()
+        "timestamp": datetime.utc().isoformat()
     }
 
     if image_url:
@@ -125,7 +121,9 @@ def main():
     seen_links = load_seen_links()
     updated_links = set()
 
-    cutoff_time = datetime.utcnow() - timedelta(hours=24)  # ✅ ช่วงเวลาย้อนหลัง
+    cutoff_time = datetime.now() - timedelta(days=24)  # ✅ ช่วงเวลาย้อนหลัง
+    # logging.info(f"✅✅✅✅✅✅ debug time aaaaaaaaaaaaa: {datetime.now()}")
+
 
     for url in RSS_FEEDS:
         try:

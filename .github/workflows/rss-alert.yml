@@ -16,14 +16,14 @@ jobs:
     - name: Try to download seen_links.txt from last run (if exists)
       uses: actions/download-artifact@v4
       with:
-        name: seen-links
+        name: seen_links
         path: .
       continue-on-error: true  # ป้องกันล้มเหลวหากยังไม่มี artifact
 
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: '3.11'
+        python-version: '3.13'
 
     - name: Install dependencies
       run: |
@@ -40,5 +40,5 @@ jobs:
       if: success() && (hashFiles('seen_links.txt') != '')
       uses: actions/upload-artifact@v4
       with:
-        name: seen-links
+        name: seen_links
         path: seen_links.txt
