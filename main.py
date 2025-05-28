@@ -3,6 +3,7 @@ import feedparser
 import requests
 import logging
 import time
+import re
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
 from urllib.parse import urlparse
@@ -11,16 +12,12 @@ from urllib.parse import urlparse
 load_dotenv()
 WEBHOOK_URL = os.getenv("DISCORD_WEBHOOK_URL")
 
-# ตรวจสอบว่า Webhook URL ถูกตั้งไว้
 if not WEBHOOK_URL:
     raise ValueError("❌ ไม่พบ DISCORD_WEBHOOK_URL ใน .env")
 
-# ตั้งค่า logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-# RSS feeds หลายแหล่งข่าว
 RSS_FEEDS = [
-    # สำนักข่าวใหญ่
     "https://www.thairath.co.th/rss/news",
     "https://www.dailynews.co.th/rss/feed/dn/feed.xml",
     "https://www.khaosod.co.th/rss.xml",
@@ -34,23 +31,31 @@ RSS_FEEDS = [
     "https://www.nationthailand.com/rss",
     "https://rss.app/feeds/AZuuiVkf1deAllDc.xml",
     "https://www.tmd.go.th/api/xml/region-daily-forecast?regionid=7",
-    
-    # Google News
-    # "https://news.google.com/rss?hl=th&gl=TH&ceid=TH:th", #Google News กว้างเกินไปไม่ค่อยเวิร์ค
-    # "https://news.google.com/rss/search?q=%E0%B8%96%E0%B8%99%E0%B8%99%E0%B8%9E%E0%B8%A3%E0%B8%B0%E0%B8%A3%E0%B8%B2%E0%B8%A1?2&hl=th&gl=TH&ceid=TH:th", #ถนนพระราม 2
-    # "https://news.google.com/rss/search?q=%E0%B8%AD%E0%B8%A1%E0%B8%A3%E0%B8%B4%E0%B8%99%E0%B8%97%E0%B8%A3%E0%B9%8C%E0%B8%97%E0%B8%B5%E0%B8%A7%E0%B8%B5&hl=th&gl=TH&ceid=TH:th", #อมรินทร์ทีวี 
-    # "https://news.google.com/rss/search?q=%E0%B8%88%E0%B8%A3%E0%B8%B2%E0%B8%88%E0%B8%A3+%E0%B8%9E%E0%B8%A3%E0%B8%B0%E0%B8%A3%E0%B8%B2%E0%B8%A1?2&hl=th&gl=TH&ceid=TH:th", #จราจร + พระราม 2
-    # "https://news.google.com/rss/search?q=js100+%E0%B8%9E%E0%B8%A3%E0%B8%B0%E0%B8%A3%E0%B8%B2%E0%B8%A1?2&hl=th&gl=TH&ceid=TH:th", #js100 + พระราม 2
-    # "https://news.google.com/rss/search?q=%E0%B8%AD%E0%B8%B8%E0%B8%9A%E0%B8%B1%E0%B8%95%E0%B8%B4%E0%B9%80%E0%B8%AB%E0%B8%95%E0%B8%B8+%E0%B8%9E%E0%B8%A3%E0%B8%B0%E0%B8%A3%E0%B8%B2%E0%B8%A1?2&hl=th&gl=TH&ceid=TH:th", #อุบัติเหตุ + พระราม 2
-    # "https://news.google.com/rss/search?q=%E0%B8%99%E0%B9%89%E0%B8%B3%E0%B8%97%E0%B9%88%E0%B8%A7%E0%B8%A1+%E0%B8%9E%E0%B8%A3%E0%B8%B0%E0%B8%A3%E0%B8%B2%E0%B8%A1?2&hl=th&gl=TH&ceid=TH:th", #น้ำท่วม + พระราม 2
-
-
+    "https://news.google.com/rss/search?q=ถนนพระราม2&hl=th&gl=TH&ceid=TH:th",
+    "https://news.google.com/rss/search?q=อัมรินทร์ทีวี&hl=th&gl=TH&ceid=TH:th",
+    "https://news.google.com/rss/search?q=จราจร+พระราม2&hl=th&gl=TH&ceid=TH:th",
+    "https://news.google.com/rss/search?q=js100+พระราม2&hl=th&gl=TH&ceid=TH:th",
+    "https://news.google.com/rss/search?q=JS100Radio+พระราม2&hl=th&gl=TH&ceid=TH:th",
+    "https://news.google.com/rss/search?q=อุบัติเหตุ+พระราม2&hl=th&gl=TH&ceid=TH:th",
+    "https://news.google.com/rss/search?q=น้ำท่วม+พระราม2&hl=th&gl=TH&ceid=TH:th",
 ]
 
-# คำค้นหา
-KEYWORDS = ["พระราม 2", "ถนนพระราม 2", "น้ำท่วม", "ฝนตก", "อุบัติเหตุ"]
+# คำค้นหาที่ใช้ regex ยืดหยุ่นขึ้น
+KEYWORDS_REGEX = [
+    re.compile(r'พระราม\s*2'),
+    re.compile(r'ถนน\s*พระราม\s*2'),
+    re.compile(r'จราจร\s*พระราม\s*2'),
+    re.compile(r'ฝนตก\s*พระราม\s*2'),
+    re.compile(r'อุบัติเหตุ\s*พระราม\s*2'),
+    re.compile(r'น้ำท่วม\s*พระราม\s*2'),
+    re.compile(r'รถติด\s*พระราม\s*2'),
+    re.compile(r'อันตราย\s*พระราม\s*2'),
 
-# ไฟล์เก็บลิงก์ที่เคยแจ้งแล้ว
+    # re.compile(r'น้ำท่วม'), #test
+    # re.compile(r'อุบัติเหตุ'), #test
+    # re.compile(r'ฝนตก') #test
+]
+
 SEEN_LINKS_FILE = "seen_links.txt"
 
 def load_seen_links():
@@ -60,48 +65,35 @@ def load_seen_links():
         return set(line.strip() for line in file.readlines())
 
 def save_seen_links(seen_links):
-    MAX_LINKS = 1000  # ปรับได้ตามขนาดที่เหมาะสม
+    MAX_LINKS = 1000
     trimmed_links = list(seen_links)[-MAX_LINKS:]
     with open(SEEN_LINKS_FILE, "w", encoding="utf-8") as file:
         file.write("\n".join(trimmed_links))
 
-# function ของเดิม
-# def send_discord_notification(title, link):
-    # message = f"🛣️ พบข่าวเกี่ยวกับถนนพระราม 2:\n**{title}**\n{link}"
-    # try:
-    #     response = requests.post(WEBHOOK_URL, json={"content": message})
-    #     response.raise_for_status()
-    #     logging.info(f"✅ ส่งแจ้งเตือนแล้ว: {title}")
-    # except requests.RequestException as e:
-    #     logging.error(f"❌ ส่ง webhook ไม่สำเร็จ: {e}")
-    
-    # embed = {
-    #     "title": title,
-    #     "url": link,
-    #     "color": 0x00b0f4,
-    #     "description": f"พบข่าวเกี่ยวกับถนนพระราม 2",
-    #     "footer": {"text": "แจ้งเตือนอัตโนมัติจากระบบ"},
-    #     "timestamp": datetime.utcnow().isoformat()
-    # }
-    # payload = {"embeds": [embed]}
-    
-    # try:
-    #     response = requests.post(WEBHOOK_URL, json=payload)
-    #     response.raise_for_status()
-    #     logging.info(f"✅ ส่งแจ้งเตือนแล้ว: {title}")
-    # except requests.RequestException as e:
-    #     logging.error(f"❌ ส่ง webhook ไม่สำเร็จ: {e}")
+def escape_discord_markdown(text):
+    return re.sub(r'([*_~`[\]])', r'\\\1', text)
 
-#โค้ด Embed + รูป + แหล่งข่าว (Webhooks ได้)
+def extract_source(url):
+    return urlparse(url).netloc.replace("www.", "")
+
+def extract_image_url(entry):
+    if "media_content" in entry and entry.media_content:
+        return entry.media_content[0].get("url")
+    elif "image" in entry:
+        return entry.image.get("href")
+    return None
+
 def send_discord_notification(title, link, image_url=None):
-    source = urlparse(link).netloc.replace("www.", "")
+    source = extract_source(link)
+    safe_title = escape_discord_markdown(title)
+
     embed = {
-        "title": title,
+        "title": safe_title,
         "url": link,
         "color": 0x00b0f4,
         "description": f"**แหล่งข่าว**: {source}",
         "footer": {"text": "แจ้งเตือนจากระบบ RSS"},
-        "timestamp": datetime.utc().isoformat()
+        "timestamp": datetime.now().isoformat()
     }
 
     if image_url:
@@ -112,17 +104,15 @@ def send_discord_notification(title, link, image_url=None):
     try:
         response = requests.post(WEBHOOK_URL, json=payload)
         response.raise_for_status()
-        logging.info(f"✅ ส่งแจ้งเตือนพร้อม Embed: {title}")
+        logging.info(f"✅ ส่งแจ้งเตือนแล้ว: {title}")
     except requests.RequestException as e:
         logging.error(f"❌ ส่ง webhook ไม่สำเร็จ: {e}")
 
-
 def main():
+    logging.info(f"✅✅✅ Start-Time : {datetime.now()} ✅✅✅")
     seen_links = load_seen_links()
     updated_links = set()
-
-    cutoff_time = datetime.now() - timedelta(days=24)  # ✅ ช่วงเวลาย้อนหลัง
-    # logging.info(f"✅✅✅✅✅✅ debug time aaaaaaaaaaaaa: {datetime.now()}")
+    cutoff_time = datetime.now() - timedelta(days=10)
 
 
     for url in RSS_FEEDS:
@@ -134,32 +124,32 @@ def main():
                 content = f"{title} {description}".lower()
                 entry_link = entry.link
 
-                # ✅ ตรวจสอบวันเวลาข่าว
                 published = entry.get("published_parsed") or entry.get("updated_parsed")
                 if published:
                     published_dt = datetime.fromtimestamp(time.mktime(published))
                     if published_dt < cutoff_time:
-                        logging.debug(f"⏱️ ข้ามข่าวเก่า: {title} ({published_dt.isoformat()})")
                         continue
 
                 if entry_link in seen_links:
                     continue
 
-                if any(keyword.lower() in content for keyword in KEYWORDS):
-                    send_discord_notification(title, entry_link)
+                if any(regex.search(content) for regex in KEYWORDS_REGEX):
+                    image_url = extract_image_url(entry)
+                    send_discord_notification(title, entry_link, image_url)
                     updated_links.add(entry_link)
 
         except Exception as e:
             logging.error(f"⚠️ เกิดข้อผิดพลาดกับ RSS feed: {url} - {e}")
 
-    # รวมและบันทึกลิงก์ใหม่
     if updated_links:
         seen_links.update(updated_links)
         save_seen_links(seen_links)
         logging.info(f"📝 บันทึกลิงก์ใหม่จำนวน {len(updated_links)} รายการแล้ว")
+        logging.info(f"✅✅✅ End-Process : {datetime.now()} ✅✅✅")
+
     else:
         logging.info("📭 ไม่พบข่าวใหม่ที่เกี่ยวข้อง")
-
+        logging.info(f"✅✅✅ End-Process : {datetime.now()} ✅✅✅")
 
 if __name__ == "__main__":
     try:
