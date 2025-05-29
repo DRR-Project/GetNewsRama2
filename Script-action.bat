@@ -1,3 +1,3 @@
 cd /d %~dp0
-main.py
+py main.py
 TIMEOUT /T 5
