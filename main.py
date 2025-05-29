@@ -167,6 +167,16 @@ def hash_entry(entry):
     return hashlib.sha256(content.encode("utf-8")).hexdigest()
 
 def send_discord_notification(title, link, image_url=None):
+    # # Code Line 171 - 177 ส่งข้อความแบบมีรูปประกอบ
+    # message = f"🛣️ พบข่าวเกี่ยวกับพระราม 2:\n URL : {link}\n\n**{title}**"
+    # try:
+    #     response = requests.post(WEBHOOK_URL, json={"content": message})
+    #     response.raise_for_status()
+    #     logging.info(f"✅ ส่งแจ้งเตือนแล้ว: {title}")
+    # except requests.RequestException as e:
+    #     logging.error(f"❌ ส่ง webhook ไม่สำเร็จ: {e}")
+
+    # Code Line 180 - 201 ส่งข้อความแบบเน้น หัวข้อเรื่อง ไม่มีรูปภาพประกอบ
     source = extract_source(link)
     safe_title = escape_discord_markdown(title)
     embed = {
@@ -195,7 +205,7 @@ def main():
     logging.info(f"✅✅✅ Start-Time : {datetime.now()} ✅✅✅")
     seen_links = load_seen_links()
     updated_links = set()
-    cutoff_time = datetime.now() - timedelta(days=5) # ใช้ค้นหาข่าวในช่วงเวลาที่ต้องการ EX. timedelta(days=5), timedelta(hours=24)
+    cutoff_time = datetime.now() - timedelta(hours=24) # ใช้ค้นหาข่าวในช่วงเวลาที่ต้องการ EX. timedelta(days=5), timedelta(hours=24)
     # logging.info(f"✅ Date-Time ✅ = {datetime.now()}")
 
     for url in RSS_FEEDS:
