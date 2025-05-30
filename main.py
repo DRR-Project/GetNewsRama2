@@ -115,6 +115,19 @@ RSS_FEEDS = [
     "https://rss.xcancel.com/INNNEWS/rss",
     "https://rss.xcancel.com/Traffic_1197V2/rss",
 
+    "https://rss.xcancel.com/Thansettakij/rss",
+    "https://rss.xcancel.com/Thairath_News/rss",
+    "https://rss.xcancel.com/Thairath_TV/rss",
+    "https://rss.xcancel.com/DailynewsTwit/rss",
+    "https://rss.xcancel.com/naewna_news/rss",
+    "https://rss.xcancel.com/matichonweekly/rss",
+    "https://rss.xcancel.com/Ch7HD/rss",
+    "https://rss.xcancel.com/ktnewsonline/rss",
+    "https://rss.xcancel.com/3mitinews/rss",
+    "https://rss.xcancel.com/Khaorescue714/rss",
+    "https://rss.xcancel.com/Ruamduay/rss",
+    "https://rss.xcancel.com/newroom44/rss",
+
 ]
 
 # คำค้นหาที่ใช้ regex เพิ่มความยืดหยุ่นขึ้นในการค้นหา
@@ -167,38 +180,38 @@ def hash_entry(entry):
     return hashlib.sha256(content.encode("utf-8")).hexdigest()
 
 def send_discord_notification(title, link, image_url=None):
-    # # Code Line 171 - 177 ส่งข้อความแบบมีรูปประกอบ
-    # message = f"🛣️ พบข่าวเกี่ยวกับพระราม 2:\n URL : {link}\n\n**{title}**"
-    # try:
-    #     response = requests.post(WEBHOOK_URL, json={"content": message})
-    #     response.raise_for_status()
-    #     logging.info(f"✅ ส่งแจ้งเตือนแล้ว: {title}")
-    # except requests.RequestException as e:
-    #     logging.error(f"❌ ส่ง webhook ไม่สำเร็จ: {e}")
-
-    # Code Line 180 - 201 ส่งข้อความแบบเน้น หัวข้อเรื่อง ไม่มีรูปภาพประกอบ
-    source = extract_source(link)
-    safe_title = escape_discord_markdown(title)
-    embed = {
-        "title": safe_title,
-        "url": link,
-        "color": 0x00b0f4,
-        "description": f"**แหล่งข่าว**: {source}",
-        "footer": {"text": "แจ้งเตือนจากระบบ RSS"},
-        "timestamp": datetime.utcnow().isoformat()
-        
-    }
-    if image_url:
-        embed["image"] = {"url": image_url}
-
-    # payload = {"embeds": [embed]}
-
+    # Code Line 184 - 190 ส่งข้อความแบบมีรูปประกอบ
+    message = f"🛣️ พบข่าวเกี่ยวกับพระราม 2:\n URL : {link}\n\n**{title}**"
     try:
-        response = session.post(WEBHOOK_URL, json={"embeds": [embed]})
+        response = requests.post(WEBHOOK_URL, json={"content": message})
         response.raise_for_status()
         logging.info(f"✅ ส่งแจ้งเตือนแล้ว: {title}")
     except requests.RequestException as e:
         logging.error(f"❌ ส่ง webhook ไม่สำเร็จ: {e}")
+
+    # # Code Line 193 - 214 ส่งข้อความแบบเน้น หัวข้อเรื่อง ไม่มีรูปภาพประกอบ
+    # source = extract_source(link)
+    # safe_title = escape_discord_markdown(title)
+    # embed = {
+    #     "title": safe_title,
+    #     "url": link,
+    #     "color": 0x00b0f4,
+    #     "description": f"**แหล่งข่าว**: {source}",
+    #     "footer": {"text": "แจ้งเตือนจากระบบ RSS"},
+    #     "timestamp": datetime.utcnow().isoformat()
+        
+    # }
+    # if image_url:
+    #     embed["image"] = {"url": image_url}
+
+    # # payload = {"embeds": [embed]}
+
+    # try:
+    #     response = session.post(WEBHOOK_URL, json={"embeds": [embed]})
+    #     response.raise_for_status()
+    #     logging.info(f"✅ ส่งแจ้งเตือนแล้ว: {title}")
+    # except requests.RequestException as e:
+    #     logging.error(f"❌ ส่ง webhook ไม่สำเร็จ: {e}")
 
 # -------------------- Main Logic --------------------
 def main():
